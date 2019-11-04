@@ -10,7 +10,6 @@ import com.mydiscord.Security.JwtProvider;
 import com.mydiscord.Security.JwtResponse;
 import com.mydiscord.Services.AccountService;
 import com.mydiscord.Services.RoleService;
-import com.mydiscord.Services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -63,7 +62,7 @@ public class AccountController {
     public ResponseEntity<?> createAccount(@Valid @RequestBody AccountPayload account) throws AccountPayloadInformationAlreadyExistsException, CannotCreateAccountException {
         if (validateEmail(account.getEmail()) && validateUsername(account.getUsername())) {
             User user = createUser(account);
-            user.setRolesToUser(setListRolesToUser());
+            user.setRoles(setDefaultListRoles());
 
             accountService.store(user);
             return ResponseEntity.ok(user);
@@ -75,10 +74,9 @@ public class AccountController {
         return new User(accountPayload.getEmail(), accountPayload.getUsername(), encoder.encode(accountPayload.getPassword()));
     }
 
-    private Set<Role> setListRolesToUser() {
+    private Set<Role> setDefaultListRoles() {
         Set<Role> roles = new HashSet<>();
         Role role = roleService.findByName((RoleName.ROLE_USER)).orElseThrow(() -> new RuntimeException("USER_ROLE wasn't found. (" + RoleName.ROLE_USER + ")"));
-        ;
         roles.add(role);
         return roles;
     }

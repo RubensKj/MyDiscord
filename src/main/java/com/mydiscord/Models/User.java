@@ -1,9 +1,7 @@
 package com.mydiscord.Models;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -13,6 +11,15 @@ public class User extends Account {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    private String avatar;
+
+    private StatusName status;
+
+    @ElementCollection
+    private List<Long> servers;
+
+    @ElementCollection
+    private List<Long> friends;
 
     public User() {
     }
@@ -33,7 +40,15 @@ public class User extends Account {
         this.id = id;
     }
 
-    public void setRolesToUser(Set<Role> roles) {
+    public void setRoles(Set<Role> roles) {
         super.setRoles(roles);
+    }
+
+    public boolean isOnline() {
+        return this.status.equals(StatusName.ONLINE);
+    }
+
+    public boolean isStatusEquals(StatusName statusName) {
+        return this.status.equals(statusName);
     }
 }
