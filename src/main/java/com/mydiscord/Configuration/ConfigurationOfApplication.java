@@ -11,7 +11,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @Configuration
 @EntityScan("com.mydiscord.Models")
 @ComponentScan("com.mydiscord.Services")
-@ComponentScan(basePackages = {"com.mydiscord.Security", "com.mydiscord.Configuration", "com.mydiscord.Services", "com.mydiscord.Controllers"})
+@ComponentScan(basePackages = {"com.mydiscord.Security", "com.mydiscord.Configuration", "com.mydiscord.Services", "com.mydiscord.Controllers", "com.mydiscord.Helpers"})
 @EnableJpaRepositories(basePackages = "com.mydiscord.Repositories")
 public class ConfigurationOfApplication {
 

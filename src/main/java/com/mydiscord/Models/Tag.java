@@ -1,9 +1,6 @@
 package com.mydiscord.Models;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 public class Tag {
@@ -16,21 +13,16 @@ public class Tag {
 
     private String color;
 
-    private boolean isDiplayedTag;
-
-    private boolean anyoneCanMention;
-
-    private boolean isAdministrator;
+    @OneToOne
+    private TagSettings tagSettings;
 
     public Tag() {
     }
 
-    public Tag(String name, String color, boolean isDiplayedTag, boolean anyoneCanMention, boolean isAdministrator) {
+    public Tag(String name, String color, TagSettings tagSettings) {
         this.name = name;
         this.color = color;
-        this.isDiplayedTag = isDiplayedTag;
-        this.anyoneCanMention = anyoneCanMention;
-        this.isAdministrator = isAdministrator;
+        this.tagSettings = tagSettings;
     }
 
     public Long getId() {
@@ -57,27 +49,11 @@ public class Tag {
         this.color = color;
     }
 
-    public boolean isDiplayedTag() {
-        return isDiplayedTag;
+    public TagSettings getTagSettings() {
+        return tagSettings;
     }
 
-    public void setDiplayedTag(boolean diplayedTag) {
-        isDiplayedTag = diplayedTag;
-    }
-
-    public boolean isAnyoneCanMention() {
-        return anyoneCanMention;
-    }
-
-    public void setAnyoneCanMention(boolean anyoneCanMention) {
-        this.anyoneCanMention = anyoneCanMention;
-    }
-
-    public boolean isAdministrator() {
-        return isAdministrator;
-    }
-
-    public void setAdministrator(boolean administrator) {
-        isAdministrator = administrator;
+    public void setTagSettings(TagSettings tagSettings) {
+        this.tagSettings = tagSettings;
     }
 }

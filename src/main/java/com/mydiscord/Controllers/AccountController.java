@@ -4,6 +4,7 @@ import com.mydiscord.Exceptions.AccountPayloadInformationAlreadyExistsException;
 import com.mydiscord.Exceptions.CannotCreateAccountException;
 import com.mydiscord.Models.Role;
 import com.mydiscord.Models.RoleName;
+import com.mydiscord.Models.StatusName;
 import com.mydiscord.Models.User;
 import com.mydiscord.Payloads.AccountPayload;
 import com.mydiscord.Security.JwtProvider;
@@ -63,6 +64,7 @@ public class AccountController {
         if (validateEmail(account.getEmail()) && validateUsername(account.getUsername())) {
             User user = createUser(account);
             user.setRoles(setDefaultListRoles());
+            user.setStatus(StatusName.OFFLINE);
 
             accountService.store(user);
             return ResponseEntity.ok(user);

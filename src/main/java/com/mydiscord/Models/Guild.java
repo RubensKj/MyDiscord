@@ -21,10 +21,10 @@ public class Guild {
     private List<Long> tags;
 
     @ElementCollection
-    private List<Long> chats;
+    private List<Long> textChannels;
 
     @ElementCollection
-    private List<Long> channels;
+    private List<Long> voiceChannels;
 
     @ElementCollection
     private List<Long> members;
@@ -84,20 +84,20 @@ public class Guild {
         this.tags = tags;
     }
 
-    public List<Long> getChats() {
-        return chats;
+    public List<Long> getTextChannels() {
+        return textChannels;
     }
 
-    public void setChats(List<Long> chats) {
-        this.chats = chats;
+    public void setTextChannels(List<Long> textChannels) {
+        this.textChannels = textChannels;
     }
 
-    public List<Long> getChannels() {
-        return channels;
+    public List<Long> getVoiceChannels() {
+        return voiceChannels;
     }
 
-    public void setChannels(List<Long> channels) {
-        this.channels = channels;
+    public void setVoiceChannels(List<Long> voiceChannels) {
+        this.voiceChannels = voiceChannels;
     }
 
     public List<Long> getMembers() {

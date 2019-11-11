@@ -21,6 +21,9 @@ public class User extends Account {
     @ElementCollection
     private List<Long> friends;
 
+    @ElementCollection
+    private List<Long> privateChats;
+
     public User() {
     }
 
@@ -42,6 +45,30 @@ public class User extends Account {
 
     public void setRoles(Set<Role> roles) {
         super.setRoles(roles);
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public StatusName getStatus() {
+        return status;
+    }
+
+    public void setStatus(StatusName status) {
+        this.status = status;
+    }
+
+    public List<Long> getServers() {
+        return servers;
+    }
+
+    public List<Long> getFriends() {
+        return friends;
+    }
+
+    public List<Long> getPrivateChats() {
+        return privateChats;
     }
 
     public boolean isOnline() {

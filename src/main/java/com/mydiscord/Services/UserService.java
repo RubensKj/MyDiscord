@@ -15,4 +15,5 @@ public class UserService {
     public User findById(Long id) throws UserNotFoundByIdException {
         return userRepository.findById(id).orElseThrow(() -> new UserNotFoundByIdException("User with id equals " + id + ", wasn't found."));
     }
+
 }

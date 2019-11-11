@@ -27,4 +27,8 @@ public class AccountService {
     public boolean existsByEmail(String email) {
         return accountRepository.existsByEmail(email);
     }
+
+    public boolean existsById(Long id) {
+        return accountRepository.existsById(id);
+    }
 }
