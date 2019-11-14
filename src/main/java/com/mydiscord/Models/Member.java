@@ -12,20 +12,21 @@ public class Member {
 
     private Long idOfUser;
 
-    private Long idOfServer;
-
     private String nickname;
 
     @ElementCollection
     private List<Long> tags;
 
+    private boolean isOwner;
+
     public Member() {
     }
 
-    public Member(Long idOfUser, Long idOfServer, String nickname) {
+    public Member(Long idOfUser, String nickname, List<Long> tags, boolean isOwner) {
         this.idOfUser = idOfUser;
-        this.idOfServer = idOfServer;
         this.nickname = nickname;
+        this.tags = tags;
+        this.isOwner = isOwner;
     }
 
     public Long getId() {
@@ -44,14 +45,6 @@ public class Member {
         this.idOfUser = idOfUser;
     }
 
-    public Long getIdOfServer() {
-        return idOfServer;
-    }
-
-    public void setIdOfServer(Long idOfServer) {
-        this.idOfServer = idOfServer;
-    }
-
     public String getNickname() {
         return nickname;
     }
@@ -66,5 +59,13 @@ public class Member {
 
     public void setTags(List<Long> tags) {
         this.tags = tags;
+    }
+
+    public boolean isOwner() {
+        return isOwner;
+    }
+
+    public void setOwner(boolean owner) {
+        isOwner = owner;
     }
 }

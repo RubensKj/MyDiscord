@@ -13,7 +13,7 @@ public class Tag {
 
     private String color;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.REMOVE)
     private TagSettings tagSettings;
 
     public Tag() {

@@ -34,7 +34,6 @@ public class TextChannel {
         this.isNSFW = isNSFW;
     }
 
-
     public Long getId() {
         return id;
     }

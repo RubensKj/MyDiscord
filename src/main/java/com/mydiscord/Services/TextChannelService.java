@@ -18,6 +18,22 @@ public class TextChannelService {
         textChannelRepository.save(textChannel);
     }
 
+    public List<TextChannel> findAllTextChannelsByIdsIn(List<Long> ids) {
+        return textChannelRepository.findTextChannelsByIdIn(ids);
+    }
+
+    public boolean existsNameInTextChannels(String name, List<Long> ids) {
+        return textChannelRepository.existsByIdInAndNameEquals(ids, name);
+    }
+
+    public boolean existsById(Long id) {
+        return textChannelRepository.existsById(id);
+    }
+
+    public void deleleById(Long id) {
+        textChannelRepository.deleteById(id);
+    }
+
     @Transactional
     public void deleteAllTextChannelsByIds(List<Long> ids) {
         textChannelRepository.deleteAllByIdIn(ids);

@@ -9,4 +9,6 @@ import java.util.List;
 @Repository
 public interface TextChannelRepository extends PagingAndSortingRepository<TextChannel, Long> {
     void deleteAllByIdIn(List<Long> ids);
+    List<TextChannel> findTextChannelsByIdIn(List<Long> ids);
+    boolean existsByIdInAndNameEquals(List<Long> ids, String name);
 }

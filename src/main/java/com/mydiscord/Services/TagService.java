@@ -1,5 +1,6 @@
 package com.mydiscord.Services;
 
+import com.mydiscord.Exceptions.TagNotFoundException;
 import com.mydiscord.Models.Tag;
 import com.mydiscord.Repositories.TagRepository;
 import com.mydiscord.Repositories.TagSettingsRepository;
@@ -30,5 +31,9 @@ public class TagService {
     @Transactional
     public void deleteAllTagsByIds(List<Long> ids) {
         tagRepository.deleteAllByIdIn(ids);
+    }
+
+    public Tag findTagStandardInsideList(List<Long> ids) throws TagNotFoundException {
+        return tagRepository.findByIdInAndNameEquals(ids, "everyone").orElseThrow(() -> new TagNotFoundException("Standard Tag was not found."));
     }
 }
