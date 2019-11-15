@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import java.util.Set;
 
 @Service
 public class TagService {
@@ -29,11 +29,11 @@ public class TagService {
     }
 
     @Transactional
-    public void deleteAllTagsByIds(List<Long> ids) {
+    public void deleteAllTagsByIds(Set<Long> ids) {
         tagRepository.deleteAllByIdIn(ids);
     }
 
-    public Tag findTagStandardInsideList(List<Long> ids) throws TagNotFoundException {
+    public Tag findTagStandardInsideList(Set<Long> ids) throws TagNotFoundException {
         return tagRepository.findByIdInAndNameEquals(ids, "everyone").orElseThrow(() -> new TagNotFoundException("Standard Tag was not found."));
     }
 }

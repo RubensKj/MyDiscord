@@ -16,13 +16,13 @@ public class User extends Account {
     private StatusName status;
 
     @ElementCollection
-    private List<Long> servers;
+    private Set<Long> servers;
 
     @ElementCollection
-    private List<Long> friends;
+    private Set<Long> friends;
 
     @ElementCollection
-    private List<Long> privateChats;
+    private Set<Long> privateChats;
 
     public User() {
     }
@@ -59,15 +59,15 @@ public class User extends Account {
         this.status = status;
     }
 
-    public List<Long> getServers() {
+    public Set<Long> getServers() {
         return servers;
     }
 
-    public List<Long> getFriends() {
+    public Set<Long> getFriends() {
         return friends;
     }
 
-    public List<Long> getPrivateChats() {
+    public Set<Long> getPrivateChats() {
         return privateChats;
     }
 

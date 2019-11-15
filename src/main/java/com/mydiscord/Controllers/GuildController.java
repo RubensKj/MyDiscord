@@ -1,11 +1,15 @@
 package com.mydiscord.Controllers;
 
+import com.mydiscord.Exceptions.CannotAddMemberException;
 import com.mydiscord.Exceptions.GuildNotFoundByIdException;
+import com.mydiscord.Exceptions.TagNotFoundException;
 import com.mydiscord.Exceptions.UserNotFoundByIdException;
 import com.mydiscord.Helpers.GuildHelper;
 import com.mydiscord.Models.Guild;
-import com.mydiscord.Payloads.GuildPayload;
+import com.mydiscord.Models.Member;
+import com.mydiscord.Models.User;
 import com.mydiscord.Payloads.GuildParseJson;
+import com.mydiscord.Payloads.GuildPayload;
 import com.mydiscord.Services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -36,11 +40,14 @@ public class GuildController {
     @Autowired
     private MemberService memberService;
 
+    @Autowired
+    private UserService userService;
+
     @PostMapping("/guild/create")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<Guild> createGuild(@Valid @RequestBody GuildPayload payloadGuild) throws UserNotFoundByIdException {
         if (accountService.existsById(payloadGuild.getIdOwner())) {
-            Guild guild = new GuildHelper(textChannelService, tagService, memberService).buildStandardModel(payloadGuild);
+            Guild guild = new GuildHelper(textChannelService, tagService, memberService, userService).buildStandardModel(payloadGuild);
             guildService.save(guild);
             return ResponseEntity.ok(guild);
         }
@@ -68,6 +75,20 @@ public class GuildController {
             return ResponseEntity.ok(new GuildParseJson(guild, textChannelService.findAllTextChannelsByIdsIn(guild.getTextChannels())));
         }
         throw new GuildNotFoundByIdException("Guild wasn't found with this id");
+    }
+
+    @PostMapping("/guilds/{id}/add/member/{idUser}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity<Member> addNewMemberToGuild(@PathVariable("id") Long idGuild, @PathVariable("idUser") Long idUser) throws CannotAddMemberException, GuildNotFoundByIdException, UserNotFoundByIdException, TagNotFoundException {
+        if (guildService.existsById(idGuild) && userService.existsById(idUser)) {
+            Guild guild = guildService.findById(idGuild);
+            User user = userService.findById(idUser);
+            Member memberWithStandardTags = new GuildHelper(guildService, memberService, tagService).createMemberWithStandardTags(user, guild.getTags());
+            guild.getMembers().add(memberWithStandardTags.getId());
+            guildService.save(guild);
+            return ResponseEntity.ok(memberWithStandardTags);
+        }
+        throw new CannotAddMemberException("It was not be able to add member on guild. Some of ids not exists.");
     }
 
     @GetMapping("/adm/guilds/{page}")

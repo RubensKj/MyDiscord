@@ -13,6 +13,7 @@ import com.mydiscord.Services.GuildService;
 import com.mydiscord.Services.TagService;
 import com.mydiscord.Services.TextChannelService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -37,8 +38,8 @@ public class TextChannelController {
     public ResponseEntity<TextChannel> createTextChannelInGuild(@PathVariable("id") Long id, @Valid @RequestBody TextChannelPayload textChannelPayload) throws GuildNotFoundByIdException, TagNotFoundException, TextChannelNameAlreayExistsException {
         if (guildService.existsById(id)) {
             Guild guild = guildService.findById(id);
-            TextChannel textChannel = new TextChannelHelper(textChannelService, guildService)
-                    .createTextChannel(textChannelPayload,
+            TextChannel textChannel = new TextChannelHelper(textChannelService)
+                    .createTextChannelAndSave(textChannelPayload,
                             tagService.findTagStandardInsideList(guild.getTags()).getId(),
                             textChannelService.existsNameInTextChannels(textChannelPayload.getName(), guild.getTextChannels()));
             guild = new GuildHelper(guildService, textChannelService).addTextChannelIdInGuild(guild, textChannel.getId());
@@ -53,6 +54,11 @@ public class TextChannelController {
     public ResponseEntity<?> deleteTextChannelById(@PathVariable("id") Long id) throws TextChannelWasNotFoundByIdException {
         if (textChannelService.existsById(id)) {
             textChannelService.deleleById(id);
+
+            // Delete messages here. (need a method)
+
+            return new ResponseEntity<>("Text Channel deleted successfully.",
+                    HttpStatus.OK);
         }
         throw new TextChannelWasNotFoundByIdException("Text Channel was not found by id.");
     }

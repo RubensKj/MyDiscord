@@ -4,11 +4,13 @@ import com.mydiscord.Models.TextChannel;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
+import java.util.Set;
 
 @Repository
 public interface TextChannelRepository extends PagingAndSortingRepository<TextChannel, Long> {
-    void deleteAllByIdIn(List<Long> ids);
-    List<TextChannel> findTextChannelsByIdIn(List<Long> ids);
-    boolean existsByIdInAndNameEquals(List<Long> ids, String name);
+    void deleteAllByIdIn(Set<Long> ids);
+
+    Set<TextChannel> findTextChannelsByIdIn(Set<Long> ids);
+
+    boolean existsByIdInAndNameEquals(Set<Long> ids, String name);
 }

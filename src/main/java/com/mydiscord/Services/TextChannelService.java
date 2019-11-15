@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import java.util.Set;
 
 @Service
 public class TextChannelService {
@@ -18,11 +18,11 @@ public class TextChannelService {
         textChannelRepository.save(textChannel);
     }
 
-    public List<TextChannel> findAllTextChannelsByIdsIn(List<Long> ids) {
+    public Set<TextChannel> findAllTextChannelsByIdsIn(Set<Long> ids) {
         return textChannelRepository.findTextChannelsByIdIn(ids);
     }
 
-    public boolean existsNameInTextChannels(String name, List<Long> ids) {
+    public boolean existsNameInTextChannels(String name, Set<Long> ids) {
         return textChannelRepository.existsByIdInAndNameEquals(ids, name);
     }
 
@@ -35,7 +35,7 @@ public class TextChannelService {
     }
 
     @Transactional
-    public void deleteAllTextChannelsByIds(List<Long> ids) {
+    public void deleteAllTextChannelsByIds(Set<Long> ids) {
         textChannelRepository.deleteAllByIdIn(ids);
     }
 }

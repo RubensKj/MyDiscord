@@ -1,10 +1,16 @@
 package com.mydiscord.Models;
 
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
+
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 @Entity
+@DynamicUpdate
 public class Guild {
 
     @Id
@@ -18,19 +24,19 @@ public class Guild {
     private String avatar;
 
     @ElementCollection
-    private List<Long> tags;
+    private Set<Long> tags;
 
     @ElementCollection
-    private List<Long> textChannels;
+    private Set<Long> textChannels;
 
     @ElementCollection
-    private List<Long> voiceChannels;
+    private Set<Long> voiceChannels;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    private Set<Long> members = new HashSet<Long>();
 
     @ElementCollection
-    private List<Long> members;
-
-    @ElementCollection
-    private List<Long> bans;
+    private Set<Long> bans;
 
     @ElementCollection
     private Set<Long> inviteLinks;
@@ -76,43 +82,43 @@ public class Guild {
         this.avatar = avatar;
     }
 
-    public List<Long> getTags() {
+    public Set<Long> getTags() {
         return tags;
     }
 
-    public void setTags(List<Long> tags) {
+    public void setTags(Set<Long> tags) {
         this.tags = tags;
     }
 
-    public List<Long> getTextChannels() {
+    public Set<Long> getTextChannels() {
         return textChannels;
     }
 
-    public void setTextChannels(List<Long> textChannels) {
+    public void setTextChannels(Set<Long> textChannels) {
         this.textChannels = textChannels;
     }
 
-    public List<Long> getVoiceChannels() {
+    public Set<Long> getVoiceChannels() {
         return voiceChannels;
     }
 
-    public void setVoiceChannels(List<Long> voiceChannels) {
+    public void setVoiceChannels(Set<Long> voiceChannels) {
         this.voiceChannels = voiceChannels;
     }
 
-    public List<Long> getMembers() {
+    public Set<Long> getMembers() {
         return members;
     }
 
-    public void setMembers(List<Long> members) {
+    public void setMembers(Set<Long> members) {
         this.members = members;
     }
 
-    public List<Long> getBans() {
+    public Set<Long> getBans() {
         return bans;
     }
 
-    public void setBans(List<Long> bans) {
+    public void setBans(Set<Long> bans) {
         this.bans = bans;
     }
 

@@ -6,7 +6,7 @@ public class TextChannelPayload {
 
     private String topic;
 
-    private boolean isNSFW;
+    private boolean nsfw;
 
     public String getName() {
         return name;
@@ -17,6 +17,6 @@ public class TextChannelPayload {
     }
 
     public boolean isNSFW() {
-        return isNSFW;
+        return nsfw;
     }
 }

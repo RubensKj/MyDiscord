@@ -1,14 +1,13 @@
 package com.mydiscord.Helpers;
 
+import com.mydiscord.Exceptions.TagNotFoundException;
+import com.mydiscord.Exceptions.UserNotFoundByIdException;
 import com.mydiscord.Models.*;
 import com.mydiscord.Payloads.GuildPayload;
-import com.mydiscord.Services.GuildService;
-import com.mydiscord.Services.MemberService;
-import com.mydiscord.Services.TagService;
-import com.mydiscord.Services.TextChannelService;
+import com.mydiscord.Services.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 public class GuildHelper {
 
@@ -20,6 +19,8 @@ public class GuildHelper {
 
     private MemberService memberService;
 
+    private UserService userService;
+
     public GuildHelper(GuildService guildService, TextChannelService textChannelService) {
         this.guildService = guildService;
         this.textChannelService = textChannelService;
@@ -30,15 +31,22 @@ public class GuildHelper {
         this.tagService = tagService;
     }
 
-    public GuildHelper(TextChannelService textChannelService, TagService tagService, MemberService memberService) {
+    public GuildHelper(GuildService guildService, MemberService memberService, TagService tagService) {
+        this.guildService = guildService;
+        this.memberService = memberService;
+        this.tagService = tagService;
+    }
+
+    public GuildHelper(TextChannelService textChannelService, TagService tagService, MemberService memberService, UserService userService) {
         this.textChannelService = textChannelService;
         this.tagService = tagService;
         this.memberService = memberService;
+        this.userService = userService;
     }
 
-    public Guild buildStandardModel(GuildPayload guildPayload) {
+    public Guild buildStandardModel(GuildPayload guildPayload) throws UserNotFoundByIdException {
         Guild guild = new Guild(guildPayload.getIdOwner(), guildPayload.getName(), "");
-        List<Long> standardTags = returnListWithStandardTags();
+        Set<Long> standardTags = returnListWithStandardTags();
         guild.setTags(standardTags);
         guild.setTextChannels(returnStandardTextChannelsIdsWithTagsSeted(standardTags));
         guild.setMembers(returnMembersIdsWithTags(guildPayload.getIdOwner(), standardTags));
@@ -46,34 +54,34 @@ public class GuildHelper {
     }
 
     // Submethods of buildStandardModel
-    private List<Long> returnStandardTextChannelsIdsWithTagsSeted(List<Long> standardTags) {
-        List<Long> listIdWithStandardTextChannelId = new ArrayList<>();
+    private Set<Long> returnStandardTextChannelsIdsWithTagsSeted(Set<Long> standardTags) {
+        Set<Long> listIdWithStandardTextChannelId = new HashSet<>();
         listIdWithStandardTextChannelId.add(createTextChannelWithStandardTags(standardTags).getId());
         return listIdWithStandardTextChannelId;
     }
 
-    private TextChannel createTextChannelWithStandardTags(List<Long> standardTags) {
+    private TextChannel createTextChannelWithStandardTags(Set<Long> standardTags) {
         TextChannel textChannelStandard = new TextChannel("general", "", false);
         textChannelStandard.setTags(standardTags);
         textChannelService.save(textChannelStandard);
         return textChannelStandard;
     }
 
-    private List<Long> returnMembersIdsWithTags(Long idUser, List<Long> standardTags) {
-        List<Long> idsMembers = new ArrayList<>();
-        Member member = createOwnerIntoMember(idUser, standardTags);
+    private Set<Long> returnMembersIdsWithTags(Long idUser, Set<Long> standardTags) throws UserNotFoundByIdException {
+        Set<Long> idsMembers = new HashSet<>();
+        Member member = createOwnerIntoMember(userService.findById(idUser), standardTags);
         idsMembers.add(member.getId());
         return idsMembers;
     }
 
-    private Member createOwnerIntoMember(Long idUser, List<Long> standardTags) {
-        Member member = new Member(idUser, "", standardTags, true);
+    private Member createOwnerIntoMember(User user, Set<Long> standardTags) {
+        Member member = new Member(user, "", standardTags, true);
         memberService.save(member);
         return member;
     }
 
-    private List<Long> returnListWithStandardTags() {
-        List<Long> idTags = new ArrayList<>();
+    private Set<Long> returnListWithStandardTags() {
+        Set<Long> idTags = new HashSet<>();
         idTags.add(createAndSaveTag().getId());
         return idTags;
     }
@@ -97,9 +105,23 @@ public class GuildHelper {
     }
 
     // Submethods of addTextChannelIdInGuild
-    private List<Long> returnListOfTextChannelIdWithNewOne(Guild guild, Long id) {
-        List<Long> textChannelsIds = guild.getTextChannels();
+    private Set<Long> returnListOfTextChannelIdWithNewOne(Guild guild, Long id) {
+        Set<Long> textChannelsIds = guild.getTextChannels();
         textChannelsIds.add(id);
         return textChannelsIds;
+    }
+
+    // Submethods of createAndAddMemberIntoGuild
+    public Member createMemberWithStandardTags(User user, Set<Long> tagsIdOfGuild) throws TagNotFoundException {
+        Tag tagStandardInsideList = tagService.findTagStandardInsideList(tagsIdOfGuild);
+        Member member = new Member(user, "", returnListTagWithThisTag(tagStandardInsideList), false);
+        memberService.save(member);
+        return member;
+    }
+
+    private Set<Long> returnListTagWithThisTag(Tag tag) {
+        Set<Long> tagsId = new HashSet<>();
+        tagsId.add(tag.getId());
+        return tagsId;
     }
 }

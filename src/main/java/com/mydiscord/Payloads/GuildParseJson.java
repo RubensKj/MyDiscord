@@ -3,7 +3,6 @@ package com.mydiscord.Payloads;
 import com.mydiscord.Models.Guild;
 import com.mydiscord.Models.TextChannel;
 
-import java.util.List;
 import java.util.Set;
 
 public class GuildParseJson {
@@ -16,20 +15,20 @@ public class GuildParseJson {
 
     private String avatar;
 
-    private List<Long> tags;
+    private Set<Long> tags;
 
-    private List<TextChannel> textChannels;
+    private Set<TextChannel> textChannels;
 
     // Change to Voice Channel model.
-    private List<Long> voiceChannels;
+    private Set<Long> voiceChannels;
 
-    private List<Long> members;
+    private Set<Long> members;
 
-    private List<Long> bans;
+    private Set<Long> bans;
 
     private Set<Long> inviteLinks;
 
-    public GuildParseJson(Guild guild, List<TextChannel> textChannels) {
+    public GuildParseJson(Guild guild, Set<TextChannel> textChannels) {
         this.id = guild.getId();
         this.idOwner = guild.getOwner();
         this.name = guild.getName();
@@ -59,23 +58,23 @@ public class GuildParseJson {
         return avatar;
     }
 
-    public List<Long> getTags() {
+    public Set<Long> getTags() {
         return tags;
     }
 
-    public List<TextChannel> getTextChannels() {
+    public Set<TextChannel> getTextChannels() {
         return textChannels;
     }
 
-    public List<Long> getVoiceChannels() {
+    public Set<Long> getVoiceChannels() {
         return voiceChannels;
     }
 
-    public List<Long> getMembers() {
+    public Set<Long> getMembers() {
         return members;
     }
 
-    public List<Long> getBans() {
+    public Set<Long> getBans() {
         return bans;
     }
 

@@ -16,4 +16,8 @@ public class UserService {
         return userRepository.findById(id).orElseThrow(() -> new UserNotFoundByIdException("User with id equals " + id + ", wasn't found."));
     }
 
+    public boolean existsById(Long id) {
+        return userRepository.existsById(id);
+    }
+
 }

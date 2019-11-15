@@ -1,7 +1,7 @@
 package com.mydiscord.Models;
 
 import javax.persistence.*;
-import java.util.List;
+import java.util.Set;
 
 @Entity
 public class Member {
@@ -10,20 +10,21 @@ public class Member {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    private Long idOfUser;
+    @ManyToOne
+    private User user;
 
     private String nickname;
 
     @ElementCollection
-    private List<Long> tags;
+    private Set<Long> tags;
 
     private boolean isOwner;
 
     public Member() {
     }
 
-    public Member(Long idOfUser, String nickname, List<Long> tags, boolean isOwner) {
-        this.idOfUser = idOfUser;
+    public Member(User user, String nickname, Set<Long> tags, boolean isOwner) {
+        this.user = user;
         this.nickname = nickname;
         this.tags = tags;
         this.isOwner = isOwner;
@@ -37,12 +38,8 @@ public class Member {
         this.id = id;
     }
 
-    public Long getIdOfUser() {
-        return idOfUser;
-    }
-
-    public void setIdOfUser(Long idOfUser) {
-        this.idOfUser = idOfUser;
+    public User getUser() {
+        return user;
     }
 
     public String getNickname() {
@@ -53,11 +50,11 @@ public class Member {
         this.nickname = nickname;
     }
 
-    public List<Long> getTags() {
+    public Set<Long> getTags() {
         return tags;
     }
 
-    public void setTags(List<Long> tags) {
+    public void setTags(Set<Long> tags) {
         this.tags = tags;
     }
 
