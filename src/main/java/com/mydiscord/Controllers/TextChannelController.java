@@ -10,6 +10,7 @@ import com.mydiscord.Models.Guild;
 import com.mydiscord.Models.TextChannel;
 import com.mydiscord.Payloads.TextChannelPayload;
 import com.mydiscord.Services.GuildService;
+import com.mydiscord.Services.MessageService;
 import com.mydiscord.Services.TagService;
 import com.mydiscord.Services.TextChannelService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,9 @@ public class TextChannelController {
     @Autowired
     private TagService tagService;
 
+    @Autowired
+    private MessageService messageService;
+
     @PostMapping("/create/textchannel/{id}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<TextChannel> createTextChannelInGuild(@PathVariable("id") Long id, @Valid @RequestBody TextChannelPayload textChannelPayload) throws GuildNotFoundByIdException, TagNotFoundException, TextChannelNameAlreayExistsException {
@@ -53,10 +57,9 @@ public class TextChannelController {
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<?> deleteTextChannelById(@PathVariable("id") Long id) throws TextChannelWasNotFoundByIdException {
         if (textChannelService.existsById(id)) {
+            TextChannel textChannel = textChannelService.findById(id);
+            new TextChannelHelper(messageService).deleteMessagesFromTextChannel(textChannel.getMessages());
             textChannelService.deleleById(id);
-
-            // Delete messages here. (need a method)
-
             return new ResponseEntity<>("Text Channel deleted successfully.",
                     HttpStatus.OK);
         }
