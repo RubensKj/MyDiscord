@@ -1,11 +1,6 @@
 package com.mydiscord.Models;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 import javax.persistence.*;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 
 @Entity
 public class MessagePrivate extends Message {
@@ -17,9 +12,12 @@ public class MessagePrivate extends Message {
     @OneToOne
     private User user;
 
-    public MessagePrivate(User user, String message) throws IllegalBlockSizeException, InvalidKeyException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException {
+    public MessagePrivate() {
+    }
+
+    public MessagePrivate(User user, String message) {
         this.user = user;
-        super.setEncryptedMessage(message);
+        super.setMessage(message);
     }
 
     @Override

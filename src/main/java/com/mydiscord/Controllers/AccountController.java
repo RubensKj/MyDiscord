@@ -66,7 +66,7 @@ public class AccountController {
             user.setRoles(setDefaultListRoles());
             user.setStatus(StatusName.OFFLINE);
 
-            accountService.store(user);
+            accountService.save(user);
             return ResponseEntity.ok(user);
         }
         throw new CannotCreateAccountException("Something went wrong during the creation of account.");

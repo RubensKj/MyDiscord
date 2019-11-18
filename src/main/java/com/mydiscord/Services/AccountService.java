@@ -12,7 +12,7 @@ public class AccountService {
     @Autowired
     private AccountRepository accountRepository;
 
-    public void store(Account account) {
+    public void save(Account account) {
         accountRepository.save(account);
     }
 

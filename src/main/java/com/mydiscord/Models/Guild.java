@@ -1,12 +1,9 @@
 package com.mydiscord.Models;
 
-import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -27,10 +24,7 @@ public class Guild {
     private Set<Long> tags;
 
     @ElementCollection
-    private Set<Long> textChannels;
-
-    @ElementCollection
-    private Set<Long> voiceChannels;
+    private Set<Long> channels;
 
     @ElementCollection(fetch = FetchType.EAGER)
     private Set<Long> members = new HashSet<Long>();
@@ -90,20 +84,12 @@ public class Guild {
         this.tags = tags;
     }
 
-    public Set<Long> getTextChannels() {
-        return textChannels;
+    public Set<Long> getChannels() {
+        return channels;
     }
 
-    public void setTextChannels(Set<Long> textChannels) {
-        this.textChannels = textChannels;
-    }
-
-    public Set<Long> getVoiceChannels() {
-        return voiceChannels;
-    }
-
-    public void setVoiceChannels(Set<Long> voiceChannels) {
-        this.voiceChannels = voiceChannels;
+    public void setChannels(Set<Long> channels) {
+        this.channels = channels;
     }
 
     public Set<Long> getMembers() {

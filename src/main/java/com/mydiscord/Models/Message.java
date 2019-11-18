@@ -4,14 +4,13 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import java.security.*;
+import javax.persistence.*;
+import java.nio.charset.StandardCharsets;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
 import java.util.Date;
 
 @Entity
@@ -21,7 +20,8 @@ public abstract class Message {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    private byte[] encryptedMessage;
+    @Column(columnDefinition = "LONGTEXT")
+    private String message;
 
     @CreationTimestamp
     private Date createdAt;
@@ -37,52 +37,13 @@ public abstract class Message {
         this.id = id;
     }
 
-    public String getMessageDecrypted() throws NoSuchAlgorithmException, NoSuchPaddingException, BadPaddingException, IllegalBlockSizeException, InvalidKeyException {
-        //Creating KeyPair generator object
-        KeyPairGenerator keyPairGen = KeyPairGenerator.getInstance("RSA");
-
-        //Initializing the key pair generator
-        keyPairGen.initialize(2048);
-
-        //Generate the pair of keys
-        KeyPair pair = keyPairGen.generateKeyPair();
-
-        //Creating a Cipher object
-        Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
-
-        //Initializing the same cipher for decryption
-        cipher.init(Cipher.DECRYPT_MODE, pair.getPrivate());
-
-        //Decrypting the text
-        byte[] decipheredText = cipher.doFinal(this.encryptedMessage);
-        return new String(decipheredText);
+    public String getMessage() throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
+        byte[] decodedBytes = Base64.getDecoder().decode(this.message.getBytes());
+        return new String(decodedBytes, StandardCharsets.UTF_8);
     }
 
-    protected void setEncryptedMessage(String toEncryptMessage) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
-        //Creating KeyPair generator object
-        KeyPairGenerator keyPairGen = KeyPairGenerator.getInstance("RSA");
-
-        //Initializing the key pair generator
-        keyPairGen.initialize(2048);
-
-        //Generate the pair of keys
-        KeyPair pair = keyPairGen.generateKeyPair();
-
-        //Getting the public key from the key pair
-        PublicKey publicKey = pair.getPublic();
-
-        //Creating a Cipher object
-        Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
-
-        //Initializing a Cipher object
-        cipher.init(Cipher.ENCRYPT_MODE, publicKey);
-
-        //Add data to the cipher
-        byte[] messageBytes = toEncryptMessage.getBytes();
-        cipher.update(messageBytes);
-
-        //encrypting the data and setting
-        this.encryptedMessage = cipher.doFinal();
+    protected void setMessage(String toEncryptMessage) {
+        this.message = new String(Base64.getEncoder().encode(toEncryptMessage.getBytes(StandardCharsets.UTF_8)));
     }
 
     public Date getCreatedAt() {

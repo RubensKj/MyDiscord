@@ -1,6 +1,8 @@
 package com.mydiscord.Services;
 
+import com.mydiscord.Exceptions.TextChannelNotExistsException;
 import com.mydiscord.Exceptions.TextChannelWasNotFoundByIdException;
+import com.mydiscord.Models.Channel;
 import com.mydiscord.Models.TextChannel;
 import com.mydiscord.Repositories.TextChannelRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,15 +17,18 @@ public class TextChannelService {
     @Autowired
     private TextChannelRepository textChannelRepository;
 
-    public void save(TextChannel textChannel) {
-        textChannelRepository.save(textChannel);
+    public void edit(TextChannel textChannel) throws TextChannelNotExistsException {
+        if (textChannel.getId() != null && textChannelRepository.existsById(textChannel.getId())) {
+            textChannelRepository.save(textChannel);
+        }
+        throw new TextChannelNotExistsException("TextChannel not exists with this id.");
     }
 
     public TextChannel findById(Long id) throws TextChannelWasNotFoundByIdException {
         return textChannelRepository.findById(id).orElseThrow(() -> new TextChannelWasNotFoundByIdException("TextChannel was not found by id"));
     }
 
-    public Set<TextChannel> findAllTextChannelsByIdsIn(Set<Long> ids) {
+    public Set<Channel> findAllTextChannelsByIdsIn(Set<Long> ids) {
         return textChannelRepository.findTextChannelsByIdIn(ids);
     }
 

@@ -35,6 +35,9 @@ public class GuildController {
     private TextChannelService textChannelService;
 
     @Autowired
+    private ChannelService channelService;
+
+    @Autowired
     private TagService tagService;
 
     @Autowired
@@ -47,7 +50,7 @@ public class GuildController {
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<Guild> createGuild(@Valid @RequestBody GuildPayload payloadGuild) throws UserNotFoundByIdException {
         if (accountService.existsById(payloadGuild.getIdOwner())) {
-            Guild guild = new GuildHelper(textChannelService, tagService, memberService, userService).buildStandardModel(payloadGuild);
+            Guild guild = new GuildHelper(channelService, tagService, memberService, userService).buildStandardModel(payloadGuild);
             guildService.save(guild);
             return ResponseEntity.ok(guild);
         }
@@ -72,7 +75,7 @@ public class GuildController {
     public ResponseEntity<GuildParseJson> findGuildAndTextChannels(@PathVariable("id") Long id) throws GuildNotFoundByIdException {
         if (guildService.existsById(id)) {
             Guild guild = guildService.findById(id);
-            return ResponseEntity.ok(new GuildParseJson(guild, textChannelService.findAllTextChannelsByIdsIn(guild.getTextChannels())));
+            return ResponseEntity.ok(new GuildParseJson(guild, textChannelService.findAllTextChannelsByIdsIn(guild.getChannels())));
         }
         throw new GuildNotFoundByIdException("Guild wasn't found with this id");
     }
@@ -83,7 +86,7 @@ public class GuildController {
         if (guildService.existsById(idGuild) && userService.existsById(idUser)) {
             Guild guild = guildService.findById(idGuild);
             User user = userService.findById(idUser);
-            Member memberWithStandardTags = new GuildHelper(guildService, memberService, tagService).createMemberWithStandardTags(user, guild.getTags());
+            Member memberWithStandardTags = new GuildHelper(memberService, tagService).createMemberWithStandardTags(user, guild.getTags());
             guild.getMembers().add(memberWithStandardTags.getId());
             guildService.save(guild);
             return ResponseEntity.ok(memberWithStandardTags);

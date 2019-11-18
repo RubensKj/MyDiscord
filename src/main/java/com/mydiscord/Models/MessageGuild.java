@@ -17,9 +17,12 @@ public class MessageGuild extends Message {
     @OneToOne
     private Member member;
 
-    public MessageGuild(Member member, String message) throws IllegalBlockSizeException, InvalidKeyException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException {
+    public MessageGuild() {
+    }
+
+    public MessageGuild(Member member, String message) {
         this.member = member;
-        super.setEncryptedMessage(message);
+        super.setMessage(message);
     }
 
     @Override
@@ -38,5 +41,9 @@ public class MessageGuild extends Message {
 
     public void setMember(Member member) {
         this.member = member;
+    }
+
+    public String getMessage() throws IllegalBlockSizeException, InvalidKeyException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException {
+        return super.getMessage();
     }
 }

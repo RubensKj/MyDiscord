@@ -6,14 +6,14 @@ import com.mydiscord.Exceptions.TextChannelNameAlreayExistsException;
 import com.mydiscord.Exceptions.TextChannelWasNotFoundByIdException;
 import com.mydiscord.Helpers.GuildHelper;
 import com.mydiscord.Helpers.TextChannelHelper;
+import com.mydiscord.Models.Channel;
 import com.mydiscord.Models.Guild;
 import com.mydiscord.Models.TextChannel;
 import com.mydiscord.Payloads.TextChannelPayload;
-import com.mydiscord.Services.GuildService;
-import com.mydiscord.Services.MessageService;
-import com.mydiscord.Services.TagService;
-import com.mydiscord.Services.TextChannelService;
+import com.mydiscord.Services.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -24,6 +24,9 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping("/api")
 public class TextChannelController {
+
+    @Autowired
+    private ChannelService channelService;
 
     @Autowired
     private TextChannelService textChannelService;
@@ -42,11 +45,11 @@ public class TextChannelController {
     public ResponseEntity<TextChannel> createTextChannelInGuild(@PathVariable("id") Long id, @Valid @RequestBody TextChannelPayload textChannelPayload) throws GuildNotFoundByIdException, TagNotFoundException, TextChannelNameAlreayExistsException {
         if (guildService.existsById(id)) {
             Guild guild = guildService.findById(id);
-            TextChannel textChannel = new TextChannelHelper(textChannelService)
+            TextChannel textChannel = new TextChannelHelper(channelService)
                     .createTextChannelAndSave(textChannelPayload,
                             tagService.findTagStandardInsideList(guild.getTags()).getId(),
-                            textChannelService.existsNameInTextChannels(textChannelPayload.getName(), guild.getTextChannels()));
-            guild = new GuildHelper(guildService, textChannelService).addTextChannelIdInGuild(guild, textChannel.getId());
+                            textChannelService.existsNameInTextChannels(textChannelPayload.getName(), guild.getChannels()));
+            guild = new GuildHelper().addTextChannelIdInGuild(guild, textChannel.getId());
             guildService.save(guild);
             return ResponseEntity.ok(textChannel);
         }
@@ -64,5 +67,15 @@ public class TextChannelController {
                     HttpStatus.OK);
         }
         throw new TextChannelWasNotFoundByIdException("Text Channel was not found by id.");
+    }
+
+    @GetMapping("/channels/{page}/{id}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public Page<Channel> findAllChannelsInGuild(@PathVariable("id") Long id, @PathVariable("page") int page) throws GuildNotFoundByIdException {
+        if (guildService.existsById(id)) {
+            Guild guild = guildService.findById(id);
+            return channelService.findAllChannelsInListIdsPageable(guild.getChannels(), PageRequest.of(page, 10));
+        }
+        throw new GuildNotFoundByIdException("Guild was not found by id");
     }
 }

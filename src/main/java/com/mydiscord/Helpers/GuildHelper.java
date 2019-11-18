@@ -11,7 +11,7 @@ import java.util.Set;
 
 public class GuildHelper {
 
-    private GuildService guildService;
+    private ChannelService channelService;
 
     private TextChannelService textChannelService;
 
@@ -21,8 +21,10 @@ public class GuildHelper {
 
     private UserService userService;
 
-    public GuildHelper(GuildService guildService, TextChannelService textChannelService) {
-        this.guildService = guildService;
+    public GuildHelper() {
+    }
+
+    public GuildHelper(TextChannelService textChannelService) {
         this.textChannelService = textChannelService;
     }
 
@@ -31,8 +33,7 @@ public class GuildHelper {
         this.tagService = tagService;
     }
 
-    public GuildHelper(GuildService guildService, MemberService memberService, TagService tagService) {
-        this.guildService = guildService;
+    public GuildHelper(MemberService memberService, TagService tagService) {
         this.memberService = memberService;
         this.tagService = tagService;
     }
@@ -44,11 +45,18 @@ public class GuildHelper {
         this.userService = userService;
     }
 
+    public GuildHelper(ChannelService channelService, TagService tagService, MemberService memberService, UserService userService) {
+        this.channelService = channelService;
+        this.tagService = tagService;
+        this.memberService = memberService;
+        this.userService = userService;
+    }
+
     public Guild buildStandardModel(GuildPayload guildPayload) throws UserNotFoundByIdException {
         Guild guild = new Guild(guildPayload.getIdOwner(), guildPayload.getName(), "");
         Set<Long> standardTags = returnListWithStandardTags();
         guild.setTags(standardTags);
-        guild.setTextChannels(returnStandardTextChannelsIdsWithTagsSeted(standardTags));
+        guild.setChannels(returnStandardTextChannelsIdsWithTagsSeted(standardTags));
         guild.setMembers(returnMembersIdsWithTags(guildPayload.getIdOwner(), standardTags));
         return guild;
     }
@@ -63,7 +71,7 @@ public class GuildHelper {
     private TextChannel createTextChannelWithStandardTags(Set<Long> standardTags) {
         TextChannel textChannelStandard = new TextChannel("general", "", false);
         textChannelStandard.setTags(standardTags);
-        textChannelService.save(textChannelStandard);
+        channelService.save(textChannelStandard);
         return textChannelStandard;
     }
 
@@ -94,19 +102,19 @@ public class GuildHelper {
 
     // Delete method
     public void deleteGuildChannelsAndTags(Guild guild) {
-        textChannelService.deleteAllTextChannelsByIds(guild.getTextChannels());
+        textChannelService.deleteAllTextChannelsByIds(guild.getChannels());
         tagService.deleteAllTagsByIds(guild.getTags());
     }
 
     // add id in guild textChannels ids.
     public Guild addTextChannelIdInGuild(Guild guild, Long id) {
-        guild.setTextChannels(returnListOfTextChannelIdWithNewOne(guild, id));
+        guild.setChannels(returnListOfTextChannelIdWithNewOne(guild, id));
         return guild;
     }
 
     // Submethods of addTextChannelIdInGuild
     private Set<Long> returnListOfTextChannelIdWithNewOne(Guild guild, Long id) {
-        Set<Long> textChannelsIds = guild.getTextChannels();
+        Set<Long> textChannelsIds = guild.getChannels();
         textChannelsIds.add(id);
         return textChannelsIds;
     }

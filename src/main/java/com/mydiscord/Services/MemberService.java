@@ -19,4 +19,8 @@ public class MemberService {
     public Member findById(Long id) throws MemberNotFoundByIdException {
         return memberRepository.findById(id).orElseThrow(() -> new MemberNotFoundByIdException("Member was not found by id."));
     }
+
+    public boolean existsById(Long id) {
+        return memberRepository.existsById(id);
+    }
 }
