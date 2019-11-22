@@ -14,8 +14,12 @@ import java.util.Set;
 @Service
 public class TextChannelService {
 
+    private final TextChannelRepository textChannelRepository;
+
     @Autowired
-    private TextChannelRepository textChannelRepository;
+    public TextChannelService(TextChannelRepository textChannelRepository) {
+        this.textChannelRepository = textChannelRepository;
+    }
 
     public void edit(TextChannel textChannel) throws TextChannelNotExistsException {
         if (textChannel.getId() != null && textChannelRepository.existsById(textChannel.getId())) {
