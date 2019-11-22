@@ -9,8 +9,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class MemberService {
 
+    private final MemberRepository memberRepository;
+
     @Autowired
-    private MemberRepository memberRepository;
+    public MemberService(MemberRepository memberRepository) {
+        this.memberRepository = memberRepository;
+    }
 
     public void save(Member member) {
         memberRepository.save(member);

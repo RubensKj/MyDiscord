@@ -13,8 +13,12 @@ import java.util.Set;
 @Service
 public class ChannelService {
 
+    private final ChannelRepository channelRepository;
+
     @Autowired
-    private ChannelRepository channelRepository;
+    public ChannelService(ChannelRepository channelRepository) {
+        this.channelRepository = channelRepository;
+    }
 
     public void save(Channel channel) {
         channelRepository.save(channel);
